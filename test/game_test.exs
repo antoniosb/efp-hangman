@@ -22,5 +22,11 @@ defmodule GameTest do
     test "returns a :letters field on the struct", context do
       assert length(context[:game].letters) > 0
     end
+
+    test "each element of the letters list is a lower-case ASCII character", context do
+      Enum.map(context[:game].letters, fn letter ->
+        assert letter =~ ~r/[a-z]/
+      end)
+    end
   end
 end
