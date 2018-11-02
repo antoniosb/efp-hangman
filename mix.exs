@@ -19,7 +19,8 @@ defmodule Hangman.MixProject do
 
   defp deps do
     [
-      {:dictionary, path: "../dictionary"}
+      {:dictionary, path: "../dictionary"},
+      {:credo, "~> 0.10.0", only: [:dev, :test], runtime: false}
     ]
   end
 end
