@@ -4,7 +4,7 @@ defmodule Hangman.Game do
   """
   defstruct(
     turns_left: 7,
-    game_state: :initalizing,
+    game_state: :initializing,
     letters: []
   )
 
@@ -12,8 +12,13 @@ defmodule Hangman.Game do
     Returns a struct with the initial game state
 
     ## Examples:
-      iex> Hangman.Game.new_game()
-      %Hangman.Game{}
+      iex> game = Hangman.Game.new_game()
+      iex> game.game_state == :initializing
+      true
+
+      iex> game = Hangman.Game.new_game()
+      iex> Enum.empty? game.letters
+      false
   """
   def new_game do
     %Hangman.Game{
