@@ -10,7 +10,7 @@ defmodule Hangman.Game do
   )
 
   @doc """
-    Returns a struct with the initial game state
+    Starts a new game using a struct with the initial game state
 
     ## Examples:
       iex> game = Hangman.Game.new_game()
@@ -31,13 +31,44 @@ defmodule Hangman.Game do
     }
   end
 
-  def make_move(game = %{game_state: state}, _guess) when state in [:won, :lost] do
-    {game, tally(game)}
-  end
+  @doc """
+  Guess a letter on the given game.
 
-  def make_move(game, guess) do
-    game = accept_move(game, guess, MapSet.member?(game.used, guess))
-    {game, tally(game)}
+  ## Examples:
+  iex> alias Hangman.Game
+  iex> game = Game.new_game("foo")
+  iex> game = Game.make_move(game, "o")
+  iex> tally = Game.tally(game)
+  iex> tally.letters
+  ["_", "o", "o"]
+  """
+  def make_move(game = %{game_state: state}, _guess) when state in [:won, :lost], do: game
+
+  def make_move(game, guess), do: accept_move(game, guess, MapSet.member?(game.used, guess))
+
+  @doc """
+    Game state useful for the client
+
+    ## Examples:
+    iex> alias Hangman.Game
+    iex> game = Game.new_game("foo")
+    iex> game = Game.make_move(game, "f")
+    iex> game = Game.make_move(game, "x")
+    iex> game = Game.make_move(game, "o")
+    iex> tally = Game.tally(game)
+    iex> tally.game_state
+    :won
+    iex> tally.turns_left
+    6
+    iex> tally.letters
+    ["f", "o", "o"]
+  """
+  def tally(game) do
+    %{
+      game_state: game.game_state,
+      turns_left: game.turns_left,
+      letters: game.letters |> reveal_guessed(game.used)
+    }
   end
 
   defp accept_move(game, _guess, _already_guessed = true) do
@@ -71,7 +102,13 @@ defmodule Hangman.Game do
   defp maybe_won(true), do: :won
   defp maybe_won(_), do: :good_guess
 
-  defp tally(_game) do
-    123
+  defp reveal_guessed(letters, used) do
+    letters
+    |> Enum.map(fn letter ->
+      reveal_letter(letter, MapSet.member?(used, letter))
+    end)
   end
+
+  defp reveal_letter(letter, _in_word = true), do: letter
+  defp reveal_letter(_letter, _not_in_word), do: "_"
 end
