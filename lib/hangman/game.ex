@@ -35,7 +35,8 @@ defmodule Hangman.Game do
     Implementation of the Hangman.make_guess interface
   """
   def make_guess(game, guess) do
-    {make_move(game, guess), tally(game)}
+    new_game = make_move(game, guess)
+    {new_game, tally(new_game)}
   end
 
   @doc """
