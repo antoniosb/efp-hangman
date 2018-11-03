@@ -32,6 +32,13 @@ defmodule Hangman.Game do
   end
 
   @doc """
+    Implementation of the Hangman.make_guess interface
+  """
+  def make_guess(game, guess) do
+    {make_move(game, guess), tally(game)}
+  end
+
+  @doc """
   Guess a letter on the given game.
 
   ## Examples:
