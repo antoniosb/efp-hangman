@@ -22,8 +22,12 @@ defmodule Hangman.Game do
       false
   """
   def new_game do
+    new_game(Dictionary.random_word())
+  end
+
+  def new_game(word) do
     %Hangman.Game{
-      letters: Dictionary.random_word() |> String.codepoints()
+      letters: word |> String.codepoints()
     }
   end
 
@@ -41,10 +45,29 @@ defmodule Hangman.Game do
   end
 
   defp accept_move(game, guess, _already_guessed) do
-    Map.put(game, :used, MapSet.put(game.used, guess))
+    game
+    |> Map.put(:used, MapSet.put(game.used, guess))
+    |> score_guess(Enum.member?(game.letters, guess))
   end
 
-  defp tally(game) do
+  defp score_guess(game, _good_guess = true) do
+    new_state =
+      game.letters
+      |> MapSet.new()
+      |> MapSet.subset?(game.used)
+      |> maybe_won
+
+    Map.put(game, :game_state, new_state)
+  end
+
+  defp score_guess(game, _not_good_guess) do
+    game
+  end
+
+  defp maybe_won(true), do: :won
+  defp maybe_won(_), do: :good_guess
+
+  defp tally(_game) do
     123
   end
 end
