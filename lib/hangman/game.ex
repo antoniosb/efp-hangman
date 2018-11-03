@@ -51,7 +51,12 @@ defmodule Hangman.Game do
   """
   def make_move(game = %{game_state: state}, _guess) when state in [:won, :lost], do: game
 
-  def make_move(game, guess), do: accept_move(game, guess, MapSet.member?(game.used, guess))
+  # def make_move(game, guess), do: accept_move(game, guess, MapSet.member?(game.used, guess))
+  def make_move(game, guess) do
+    (is_binary(guess) && guess |> String.codepoints() |> length() == 1 && guess =~ ~r/[a-z]/ &&
+       accept_move(game, guess, MapSet.member?(game.used, guess))) ||
+      %{game | game_state: :invalid_guess}
+  end
 
   @doc """
     Game state useful for the client

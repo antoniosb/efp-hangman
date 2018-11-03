@@ -124,5 +124,18 @@ defmodule GameTest do
 
       Enum.reduce(moves, game, reducer)
     end
+
+    test "an invalid guess is recognized" do
+      game = Game.new_game()
+      game = Game.make_move(game, "1")
+      assert game.game_state == :invalid_guess
+      assert game.turns_left == 7
+      game = Game.make_move(game, "asd")
+      assert game.game_state == :invalid_guess
+      assert game.turns_left == 7
+      game = Game.make_move(game, "A")
+      assert game.game_state == :invalid_guess
+      assert game.turns_left == 7
+    end
   end
 end
