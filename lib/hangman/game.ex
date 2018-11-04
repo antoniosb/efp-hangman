@@ -75,12 +75,15 @@ defmodule Hangman.Game do
     6
     iex> tally.letters
     ["f", "o", "o"]
+    iex> tally.used
+    ["f","o","x"]
   """
   def tally(game) do
     %{
       game_state: game.game_state,
       turns_left: game.turns_left,
-      letters: game.letters |> reveal_guessed(game.used)
+      letters: game.letters |> reveal_guessed(game.used),
+      used: game.used |> MapSet.to_list() |> Enum.sort()
     }
   end
 
